@@ -9,8 +9,8 @@ using SamuraiApp.Data;
 namespace SamuraiApp.Data.Migrations
 {
     [DbContext(typeof(SamuraiContext))]
-    [Migration("20210927130410_m2mpayla")]
-    partial class m2mpayla
+    [Migration("20210927131905_init5")]
+    partial class init5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -48,6 +48,27 @@ namespace SamuraiApp.Data.Migrations
                     b.HasKey("BattleID");
 
                     b.ToTable("Battles");
+                });
+
+            modelBuilder.Entity("SamuraiApp.Domain.Horse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SamuraiId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SamuraiId")
+                        .IsUnique();
+
+                    b.ToTable("Horse");
                 });
 
             modelBuilder.Entity("SamuraiApp.Domain.Quote", b =>
@@ -100,6 +121,15 @@ namespace SamuraiApp.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SamuraiApp.Domain.Horse", b =>
+                {
+                    b.HasOne("SamuraiApp.Domain.Samurai", null)
+                        .WithOne("Horse")
+                        .HasForeignKey("SamuraiApp.Domain.Horse", "SamuraiId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SamuraiApp.Domain.Quote", b =>
                 {
                     b.HasOne("SamuraiApp.Domain.Samurai", "Samurai")
@@ -113,6 +143,8 @@ namespace SamuraiApp.Data.Migrations
 
             modelBuilder.Entity("SamuraiApp.Domain.Samurai", b =>
                 {
+                    b.Navigation("Horse");
+
                     b.Navigation("Quotes");
                 });
 #pragma warning restore 612, 618
